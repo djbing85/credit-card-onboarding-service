@@ -184,7 +184,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"emiratesIdNumber\":\"784-VT-SCENARIO-002\",\n    \"name\":\"All Pass User\",\n    \"mobileNumber\":\"+971501111111\",\n    \"nationality\":\"UAE\",\n    \"address\":\"Dubai Marina\",\n    \"income\":\"300000\",\n    \"employmentDetails\":\"Software Engineer at Tech Corp\",\n    \"requestedCreditLimit\":\"50000.99\",\n    \"bankStatement\":\"/path/to/file.pdf\"\n}",
+          "raw": "{\n    \"criteria\": \"Employment Verification2\",\n    \"mandatoryPass\": false,\n    \"scoreContribution\": 1.0000,\n    \"scoreType\": 0,\n    \"score\": 0.20\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -192,7 +192,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8080/api/onboarding",
+          "raw": "http://127.0.0.1:8080/api/rules",
           "protocol": "http",
           "host": [
             "127",
@@ -203,7 +203,7 @@
           "port": "8080",
           "path": [
             "api",
-            "onboarding"
+            "rules"
           ]
         }
       },
@@ -216,7 +216,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"id\":1,\n    \"emiratesIdNumber\":\"784-VT-SCENARIO-002\",\n    \"name\":\"All Pass User2\",\n    \"mobileNumber\":\"+971501111122\",\n    \"nationality\":\"UAE\",\n    \"address\":\"Dubai Marina 102\",\n    \"income\":\"320000\",\n    \"employmentDetails\":\"Software Engineer at Tech Corp22\",\n    \"requestedCreditLimit\":\"50000.99\",\n    \"bankStatement\":\"/path/to/file.pdf\"\n}",
+          "raw": "{\n    \"id\":6,    \n    \"criteria\": \"Employment Verification22\",\n    \"mandatoryPass\": false,\n    \"scoreContribution\": 0.0000,\n    \"scoreType\": 0,\n    \"score\": 0.20\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -224,7 +224,7 @@
           }
         },
         "url": {
-          "raw": "http://127.0.0.1:8080/api/onboarding",
+          "raw": "http://127.0.0.1:8080/api/rules",
           "protocol": "http",
           "host": [
             "127",
@@ -235,7 +235,7 @@
           "port": "8080",
           "path": [
             "api",
-            "onboarding"
+            "rules"
           ]
         }
       },
@@ -247,7 +247,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://127.0.0.1:8080/api/onboarding/1",
+          "raw": "http://127.0.0.1:8080/api/rules/1",
           "protocol": "http",
           "host": [
             "127",
@@ -258,7 +258,7 @@
           "port": "8080",
           "path": [
             "api",
-            "onboarding",
+            "rules",
             "1"
           ]
         }
@@ -271,7 +271,7 @@
         "method": "DELETE",
         "header": [],
         "url": {
-          "raw": "http://127.0.0.1:8080/api/onboarding/1",
+          "raw": "http://127.0.0.1:8080/api/rules/6",
           "protocol": "http",
           "host": [
             "127",
@@ -282,8 +282,8 @@
           "port": "8080",
           "path": [
             "api",
-            "onboarding",
-            "1"
+            "rules",
+            "6"
           ]
         }
       },
@@ -295,7 +295,7 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://127.0.0.1:8080/api/onboarding/page?pageNum=1&pageSize=2",
+          "raw": "http://127.0.0.1:8080/api/rules/page?pageNum=1&pageSize=2",
           "protocol": "http",
           "host": [
             "127",
@@ -306,7 +306,7 @@
           "port": "8080",
           "path": [
             "api",
-            "onboarding",
+            "rules",
             "page"
           ],
           "query": [
