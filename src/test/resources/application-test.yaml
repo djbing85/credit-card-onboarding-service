@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  sql:
+    init:
+      schema-locations: classpath:sql/create_table.sql
+      data-locations: classpath:sql/init_data.sql,classpath:sql/init_test_data.sql
+      mode: always
+
+app:
+  rule:
+    timeout-millis: 100 # 缩短超时时间以测试超时场景
+    cache-expire-millis: 60000

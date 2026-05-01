@@ -1,0 +1,70 @@
+spring:
+  application:
+    name: credit-card-onboarding-service
+
+  # Virtual Threads
+  threads:
+    virtual:
+      enabled: true
+  
+  # H2 Database Configuration (In-memory mode)
+  datasource:
+    url: jdbc:h2:mem:credit_card;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  
+  # SQL Initialization
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:sql/create_table.sql
+      data-locations: classpath:sql/init_data.sql
+      continue-on-error: false
+
+# MyBatis Plus Configuration
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-field: status
+      logic-delete-value: 9
+      logic-not-delete-value: 1
+
+# Server Configuration
+server:
+  port: 8080
+  tomcat:
+    threads:
+      virtual: true
+
+# Actuator Configuration, should be disabled in PROD
+management:
+  endpoints:
+    enabled-by-default: false
+
+# Application Configuration
+app:
+  third-party:
+    # Base URL for third-party services
+    base-url: http://localhost:8081
+    # Connection timeout for all third-party services in milliseconds
+    connect-timeout: 3000
+    # Read timeout for each third-party service in milliseconds
+    identity-verification-read-timeout: 5000
+    employment-verification-read-timeout: 8000
+    compliance-check-read-timeout: 6000
+    behavioral-analysis-read-timeout: 10000
+    risk-evaluation-read-timeout: 7000
+  rule:
+    # Cache expiration time for rules in milliseconds
+    cache-expire-millis: 60000
+  verification:
+    # Score thresholds for verification results
+    threshold-auto-issue: 0.9
+    threshold-manual-review-limit: 0.75
+    threshold-manual-review: 0.5
+

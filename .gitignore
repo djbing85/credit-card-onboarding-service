@@ -1,0 +1,57 @@
+# IDE - IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# IDE - Eclipse (如果需要)
+.classpath
+.project
+.settings/
+
+# IDE - VS Code (如果需要)
+.vscode/
+
+# Build Output
+target/
+*.jar
+*.war
+*.ear
+*.class
+
+# Data Directory
+data/
+
+# Database Files
+*.db
+*.h2.db
+*.sqlite
+
+# Log Files
+*.log
+logs/
+
+# OS Files
+.DS_Store
+Thumbs.db
+*~
+
+# Temporary Files
+*.tmp
+*.bak
+*.swp
+
+# Maven
+.mvn/
+
+# Spring Boot
+spring-boot-starter-parent/
+
+# Test Coverage
+coverage/
+*.gcov
+
+# Environment Variables (如果将来需要)
+.env
+.env.local
+*.local
