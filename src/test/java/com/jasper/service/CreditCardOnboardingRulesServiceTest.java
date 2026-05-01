@@ -67,9 +67,9 @@ class CreditCardOnboardingRulesServiceTest extends BaseIntegrationTest {
         Assertions.assertNotNull(created.getId());
         Assertions.assertEquals(criteria, created.getCriteria());
         Assertions.assertEquals(mandatoryPass, created.getMandatoryPass());
-        Assertions.assertEquals(contribution, created.getScoreContribution());
+        Assertions.assertEquals(0, contribution.compareTo(created.getScoreContribution()), "Score contribution should match");
         Assertions.assertEquals(scoreType, created.getScoreType());
-        Assertions.assertEquals(score, created.getScore());
+        Assertions.assertEquals(0, score.compareTo(created.getScore()), "Score should match");
         Assertions.assertEquals(CreditCardOnboardingRules.STATUS_ENABLED, created.getStatus());
         Assertions.assertEquals("system", created.getOperator());
         Assertions.assertEquals(0L, created.getVersion());
@@ -190,28 +190,52 @@ class CreditCardOnboardingRulesServiceTest extends BaseIntegrationTest {
         rule.setScore(new BigDecimal("20.00"));
         rulesService.create(rule);
 
-        // Update based on type
+        Integer id = rule.getId();
+        
+        // Verify initial state
+        CreditCardOnboardingRules beforeUpdate = rulesService.getById(id);
+        Assertions.assertNotNull(beforeUpdate);
+        Assertions.assertEquals(0L, beforeUpdate.getVersion());
+        Assertions.assertNotNull(beforeUpdate.getCreatedTime());
+        Assertions.assertNotNull(beforeUpdate.getStatus());
+        Assertions.assertNotNull(beforeUpdate.getOperator());
+
+        // Update based on type - create a new object with only the fields to update
+        CreditCardOnboardingRules updateRequest = new CreditCardOnboardingRules();
+        updateRequest.setId(id);
         if ("score".equals(updateType)) {
-            rule.setScore(newScore);
+            updateRequest.setScore(newScore);
         } else if ("mandatory".equals(updateType)) {
-            rule.setMandatoryPass(newMandatory);
+            updateRequest.setMandatoryPass(newMandatory);
         } else if ("contribution".equals(updateType)) {
-            rule.setScoreContribution(newContribution);
+            updateRequest.setScoreContribution(newContribution);
         }
 
-        CreditCardOnboardingRules updated = rulesService.update(rule);
+        CreditCardOnboardingRules updated = rulesService.update(updateRequest);
 
+        // Verify returned object has all fields populated
         Assertions.assertNotNull(updated);
+        Assertions.assertEquals(id, updated.getId());
         if ("score".equals(updateType)) {
-            Assertions.assertEquals(newScore, updated.getScore());
+            Assertions.assertEquals(0, newScore.compareTo(updated.getScore()), "Score should match");
         } else if ("mandatory".equals(updateType)) {
             Assertions.assertEquals(newMandatory, updated.getMandatoryPass());
         } else if ("contribution".equals(updateType)) {
-            Assertions.assertEquals(newContribution, updated.getScoreContribution());
+            Assertions.assertEquals(0, newContribution.compareTo(updated.getScoreContribution()), "Score contribution should match");
         }
-        Assertions.assertNotNull(updated.getUpdatedTime());
+        
+        // Verify preserved fields are not null
+        Assertions.assertNotNull(updated.getCreatedTime(), "createdTime should not be null");
+        Assertions.assertNotNull(updated.getStatus(), "status should not be null");
+        Assertions.assertNotNull(updated.getOperator(), "operator should not be null");
+        Assertions.assertNotNull(updated.getUpdatedTime(), "updatedTime should not be null");
+        
+        // Verify preserved fields maintain original values
+        Assertions.assertEquals(beforeUpdate.getCreatedTime(), updated.getCreatedTime());
+        Assertions.assertEquals(beforeUpdate.getStatus(), updated.getStatus());
+        Assertions.assertEquals(beforeUpdate.getOperator(), updated.getOperator());
 
-        log.info("Updated rule ID: {}, field: {}", updated.getId(), updateType);
+        log.info("Updated rule ID: {}, field: {}, all fields present", updated.getId(), updateType);
     }
 
     @Test
@@ -220,9 +244,13 @@ class CreditCardOnboardingRulesServiceTest extends BaseIntegrationTest {
         rule.setId(999999);
         rule.setCriteria("Non-existent");
         
-        // Should not throw exception
-        rulesService.update(rule);
-        log.info("Update non-existent rule completed without error");
+        // Should throw RuntimeException
+        RuntimeException exception = Assertions.assertThrows(
+            RuntimeException.class,
+            () -> rulesService.update(rule)
+        );
+        Assertions.assertTrue(exception.getMessage().contains("Rule not found with id: 999999"));
+        log.info("Update non-existent rule throws exception as expected: {}", exception.getMessage());
     }
 
     // ==================== Delete Rule Tests ====================
@@ -288,7 +316,7 @@ class CreditCardOnboardingRulesServiceTest extends BaseIntegrationTest {
 
         CreditCardOnboardingRules created = rulesService.create(rule);
         Assertions.assertNotNull(created.getId());
-        Assertions.assertEquals(new BigDecimal("-10.00"), created.getScore());
+        Assertions.assertEquals(0, new BigDecimal("-10.00").compareTo(created.getScore()), "Score should match");
 
         log.info("Created rule with negative score");
     }

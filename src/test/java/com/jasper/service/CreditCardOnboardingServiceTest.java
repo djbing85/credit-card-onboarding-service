@@ -127,17 +127,61 @@ class CreditCardOnboardingServiceTest extends BaseIntegrationTest {
         onboarding.setName("Original Name");
         onboardingService.create(onboarding);
 
+        Long id = onboarding.getId();
+        
+        // Verify initial state
+        CreditCardOnboarding beforeUpdate = onboardingService.getById(id);
+        Assertions.assertNotNull(beforeUpdate);
+        Assertions.assertEquals("Original Name", beforeUpdate.getName());
+        Assertions.assertEquals(0L, beforeUpdate.getVersion());
+        Assertions.assertNotNull(beforeUpdate.getCreatedTime());
+        Assertions.assertNotNull(beforeUpdate.getStatus());
+        Assertions.assertNotNull(beforeUpdate.getOperator());
+
         // Update
-        onboarding.setName("Updated Name");
-        onboarding.setIncome(new BigDecimal("300000"));
-        CreditCardOnboarding updated = onboardingService.update(onboarding);
+        CreditCardOnboarding updateRequest = new CreditCardOnboarding();
+        updateRequest.setId(id);
+        updateRequest.setName("Updated Name");
+        updateRequest.setIncome(new BigDecimal("300000"));
+        CreditCardOnboarding updated = onboardingService.update(updateRequest);
 
+        // Verify returned object has all fields populated
         Assertions.assertNotNull(updated);
+        Assertions.assertEquals(id, updated.getId());
         Assertions.assertEquals("Updated Name", updated.getName());
-        Assertions.assertEquals(new BigDecimal("300000"), updated.getIncome());
+        Assertions.assertEquals(0, new BigDecimal("300000").compareTo(updated.getIncome()), "Income should match");
         Assertions.assertEquals(1L, updated.getVersion());
+        
+        // Verify preserved fields are not null
+        Assertions.assertNotNull(updated.getCreatedTime(), "createdTime should not be null");
+        Assertions.assertNotNull(updated.getStatus(), "status should not be null");
+        Assertions.assertNotNull(updated.getOperator(), "operator should not be null");
+        Assertions.assertNotNull(updated.getUpdatedTime(), "updatedTime should not be null");
+        
+        // Verify preserved fields maintain original values
+        Assertions.assertEquals(beforeUpdate.getCreatedTime(), updated.getCreatedTime());
+        Assertions.assertEquals(beforeUpdate.getStatus(), updated.getStatus());
+        Assertions.assertEquals(beforeUpdate.getOperator(), updated.getOperator());
 
-        log.info("Updated onboarding version: {}", updated.getVersion());
+        log.info("Updated onboarding version: {}, all fields present", updated.getVersion());
+    }
+
+    /**
+     * Test update non-existent onboarding
+     */
+    @Test
+    void testUpdateNonExistent() {
+        CreditCardOnboarding onboarding = new CreditCardOnboarding();
+        onboarding.setId(999999L);
+        onboarding.setName("Non-existent");
+        
+        // Should throw RuntimeException
+        RuntimeException exception = Assertions.assertThrows(
+            RuntimeException.class,
+            () -> onboardingService.update(onboarding)
+        );
+        Assertions.assertTrue(exception.getMessage().contains("Onboarding not found with id: 999999"));
+        log.info("Update non-existent onboarding throws exception as expected: {}", exception.getMessage());
     }
 
     /**
@@ -280,7 +324,7 @@ class CreditCardOnboardingServiceTest extends BaseIntegrationTest {
         onboardingService.create(onboarding);
 
         Assertions.assertNotNull(onboarding.getId());
-        Assertions.assertEquals(new BigDecimal("0"), onboarding.getIncome());
+        Assertions.assertEquals(0, new BigDecimal("0").compareTo(onboarding.getIncome()), "Income should be zero");
         log.info("Created onboarding with zero income");
     }
 
@@ -297,7 +341,7 @@ class CreditCardOnboardingServiceTest extends BaseIntegrationTest {
         onboardingService.create(onboarding);
 
         Assertions.assertNotNull(onboarding.getId());
-        Assertions.assertEquals(new BigDecimal("500000"), onboarding.getRequestedCreditLimit());
+        Assertions.assertEquals(0, new BigDecimal("500000").compareTo(onboarding.getRequestedCreditLimit()), "Credit limit should match");
         log.info("Created onboarding with high credit limit");
     }
 }

@@ -902,9 +902,9 @@ class CreditCardOnboardingControllerTest extends BaseIntegrationTest {
             Assertions.assertEquals(id, updatedVo.getId());
 
             if ("income".equals(updateField)) {
-                Assertions.assertEquals(newValue, updatedVo.getIncome());
+                Assertions.assertEquals(0, ((BigDecimal) newValue).compareTo(updatedVo.getIncome()), "Income should match");
             } else if ("creditLimit".equals(updateField)) {
-                Assertions.assertEquals(newValue, updatedVo.getRequestedCreditLimit());
+                Assertions.assertEquals(0, ((BigDecimal) newValue).compareTo(updatedVo.getRequestedCreditLimit()), "Credit limit should match");
             } else if ("address".equals(updateField)) {
                 Assertions.assertEquals(newValue, updatedVo.getAddress());
             }

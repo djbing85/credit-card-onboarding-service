@@ -73,12 +73,15 @@ public class CreditCardOnboardingService extends ServiceImpl<CreditCardOnboardin
         if (existing == null) {
             throw new RuntimeException("Onboarding not found with id: " + onboarding.getId());
         }
+        // TODO check version
         
         // Use existing version and increment it
         onboarding.setVersion(existing.getVersion() + 1);
         onboarding.setUpdatedTime(Instant.now().toEpochMilli());
         updateById(onboarding);
-        return onboarding;
+        
+        // Return the latest data from database
+        return getById(onboarding.getId());
     }
 
     /**

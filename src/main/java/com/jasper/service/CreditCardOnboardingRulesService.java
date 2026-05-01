@@ -55,9 +55,20 @@ public class CreditCardOnboardingRulesService extends ServiceImpl<CreditCardOnbo
      * Update rule
      */
     public CreditCardOnboardingRules update(CreditCardOnboardingRules rules) {
+        // Get current version from database to avoid null pointer exception
+        CreditCardOnboardingRules existing = getById(rules.getId());
+        if (existing == null) {
+            throw new RuntimeException("Rule not found with id: " + rules.getId());
+        }
+        // TODO check version
+        
+        // Use existing version and increment it
+        rules.setVersion(existing.getVersion() + 1);
         rules.setUpdatedTime(Instant.now().toEpochMilli());
         updateById(rules);
-        return rules;
+        
+        // Return the latest data from database
+        return getById(rules.getId());
     }
 
     /**
